@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Campus Bites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>/* Privacy Policy Page Styles */
+        .privacy-container {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .privacy-container h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .privacy-container h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .privacy-container p {
+            font-size: 1.1rem;
+            color: #555555;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .privacy-container ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .privacy-container ul li {
+            font-size: 1.1rem;
+            color: #333333;
+            margin-bottom: 1rem;
+        }
+        
+        .privacy-container a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .privacy-container a:hover {
+            text-decoration: underline;
+        }</style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h1>Campus Bites</h1>
+        </div>
+    </header>
+    <main class="privacy-container">
+        <h1>Privacy Policy</h1>
+        <p>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information.</p>
+        <h2>Information We Collect</h2>
+        <ul>
+            <li><strong>Personal Information:</strong> Name, email, and contact details when you register or contact us.</li>
+            <li><strong>Order Details:</strong> Information about your food orders and preferences.</li>
+            <li><strong>Usage Data:</strong> Data about your interaction with our platform to improve your experience.</li>
+        </ul>
+        <h2>How We Use Your Information</h2>
+        <ul>
+            <li>To provide and improve our services.</li>
+            <li>To personalize recommendations and promotions.</li>
+            <li>To ensure security and prevent fraud.</li>
+        </ul>
+        <h2>Your Rights</h2>
+        <p>You have the right to access, update, or delete your information. Contact us at <a href="mailto:campusbites.in01@gmail.com">campusbites.in01@gmail.com</a> for any concerns.</p>
+        <p>For more details, please read our full policy or contact us directly.</p>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+            <p>Your campus, your food, your way.</p>
+            <div class="footer-links">
+                <a href="{{ url_for('index') }}">Home</a> | 
+                <a href="{{ url_for('about_us') }}">About Us</a> | 
+                <a href="{{ url_for('contact_us') }}">Contact Us</a> | 
+                <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

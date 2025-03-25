@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Orders | Campus Bites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='your_css_file.css') }}">
+    <style>
+        :root {
+            --background: #fff0f5;
+            --card-bg: #ffffff;
+            --pink: #e48aa0;
+            --pink-hover: #d16e8b;
+            --blue: #74b9ff;
+            --blue-hover: #4a90e2;
+            --text: #333;
+            --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #1c2331, #2c3e50);
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .navbar .logo h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-actions a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-actions a::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--pink);
+            transition: width 0.3s ease;
+        }
+
+        .nav-actions a:hover {
+            color: var(--pink-hover);
+        }
+
+        .nav-actions a:hover::after {
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: #5a4234;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #f2a3b3;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Orders Grid */
+        .order-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Order Card */
+        .order-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #f2cdd4;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-card p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        ul {
+            margin: 0.5rem 0;
+            padding-left: 1.2rem;
+        }
+
+        /* Buttons */
+        .btn-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-form button {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-form button[type="submit"]:first-child {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-form button[type="submit"]:first-child:hover {
+            background: var(--blue-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-form button[type="submit"]:last-child {
+            background: var(--pink);
+            color: white;
+        }
+
+        .btn-form button[type="submit"]:last-child:hover {
+            background: var(--pink-hover);
+            transform: scale(1.02);
+        }
+
+        .back-link {
+            margin: 1rem 2rem;
+            display: inline-block;
+            color: #5a4234;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--pink-hover);
+        }
+
+        footer {
+            background: #1c2331;
+            color: #fff;
+            padding: 1.2rem;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+            margin-top: auto;
+            box-shadow: 0 -4px 12px var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .order-grid {
+                padding: 0 1rem;
+            }
+
+            .btn-form {
+                flex-direction: column;
+            }
+
+            .btn-form button {
+                width: 100%;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+          <h1>Campus Bites</h1>
+        </div>
+        <div class="nav-actions">
+          <a href="/owner_dashboard">Dashboard</a>
+          <a href="{{ url_for('create_shop') }}">Create Shop</a>
+          <a href="/manage_shop">Your Shop</a>
+          <a href="{{ url_for('view_orders') }}">View Orders</a>
+          <a href="/owner_profile">Profile</a>
+          <a href="/logout">Logout</a>
+        </div>
+    </header>
+
+    <h1 class="header">New Orders</h1>
+
+    <div class="order-grid">
+        {% for order in pending_orders %}
+        <div class="order-card">
+            <p><strong>Customer:</strong> {{ order.customer.name }}</p>
+            <p><strong>Items:</strong></p>
+            <ul>
+                {% for item in order.items %}
+                    <li>{{ item.quantity }} x {{ item.name }} ({{ item.serving }}) - ₹{{ item.price }}</li>
+                {% endfor %}
+            </ul>
+            <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+            <div class="btn-form">
+                <form action="{{ url_for('accept_order',order_id=order.id) }}" method="post">
+                    <button type="submit">Accept</button>
+                </form>
+                <form action="{{ url_for('deny_order',order_id=order.id) }}" method="post">
+                    <button type="submit">Deny</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p style="padding:1rem;">No new orders right now.</p>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+    </footer>
+</body>
+</html>

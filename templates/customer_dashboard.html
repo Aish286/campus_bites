@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Bites - Customer Dashboard</title>
+  <style>
+    :root {
+      --primary-bg: #f9f6f1;
+      --card-bg: #ffffff;
+      --accent: #ff9a9e;
+      --accent-hover: #fbc2eb;
+      --text-dark: #2c3e50;
+      --text-light: #555;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Poppins', sans-serif;
+      background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+      background-size: cover;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(90deg, #1c2331, #2c3e50);
+      color: white;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .navbar .logo h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-actions a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-actions a:hover {
+      color: var(--accent-hover);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 2rem;
+    }
+
+    .flash-messages {
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .alert-success { background-color: #4CAF50; color: white; }
+    .alert-danger { background-color: #f44336; color: white; }
+    .alert-info { background-color: #2196F3; color: white; }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px var(--shadow);
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .card h2 {
+      margin-bottom: 0.8rem;
+      font-size: 1.5rem;
+      color: var(--text-dark);
+    }
+
+    .card p {
+      color: var(--text-light);
+      margin-bottom: 1.2rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease;
+      box-shadow: 0 4px 10px var(--shadow);
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, var(--accent-hover), #a6c1ee);
+    }
+
+    footer {
+      background: #1c2331;
+      color: #fff;
+      padding: 1.2rem;
+      text-align: center;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .footer-links a {
+      color: #fff;
+      margin: 0 0.5rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-hover);
+    }
+
+    @media (max-width: 600px) {
+      .nav-actions {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
+  </style>
+
+  <script>
+    function dismissFlashMessages() {
+      const flashMessages = document.querySelectorAll('.alert');
+      flashMessages.forEach(message => {
+        setTimeout(() => {
+          message.style.opacity = '0';
+          setTimeout(() => {
+            message.style.display = 'none';
+          }, 1000);
+        }, 5000);
+      });
+    }
+    window.onload = dismissFlashMessages;
+  </script>
+</head>
+<body>
+  <div class="main-wrapper">
+    <header class="navbar">
+      <div class="logo">
+        <h1>Campus Bites</h1>
+      </div>
+      <div class="nav-actions">
+        <a href="/customer_profile">Profile</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <h1>Customer Dashboard</h1>
+
+      <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="dashboard">
+        <div class="card">
+          <h2>Browse Restaurants</h2>
+          <p>Explore various campus restaurants and their menus.</p>
+          <a href="{{ url_for('browse_shops') }}" class="btn">Start Browsing</a>
+        </div>
+        <div class="card">
+          <h2>My Orders</h2>
+          <p>View your current and past orders.</p>
+          <a href="{{ url_for('customer_orders') }}" class="btn">View Orders</a>
+        </div>
+        <div class="card">
+          <h2>Favorites</h2>
+          <p>Browse your favorite dishes from your top shops.</p>
+          <a href="{{ url_for('favorites') }}" class="btn">View Favorites</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+  </footer>
+</body>
+</html>

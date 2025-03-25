@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Favorite Items | Campus Bites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='your_css_file.css') }}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #1c2331, #2c3e50);
+            color: #fff;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-actions a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-actions a:hover {
+            color: #ffd194;
+        }
+
+        .back-link {
+            margin: 1rem 2rem;
+            display: inline-block;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            background: #e8f5e9;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #c8e6c9;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 2rem;
+            margin: 1.5rem 0;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 2rem;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 2px solid rgba(255, 192, 203, 0.4);
+        }
+
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .shop-name {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0.25rem 0 0.5rem 0;
+        }
+
+        .item-category {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .price {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2e7d32;
+            margin: 0.5rem 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .add-btn, .remove-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-weight: 500;
+        }
+
+        .add-btn {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #1b5e20;
+        }
+
+        .remove-btn {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #c62828;
+        }
+
+        .remove-btn:hover {
+            background: #ffcdd2;
+        }
+
+        footer {
+            background: #1c2331;
+            color: #fff;
+            padding: 1.2rem;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h1>Campus Bites</h1>
+        </div>
+        <div class="nav-actions">
+            <a href="{{ url_for('customer_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('browse_shops') }}" class="btn">Order an item</a>
+            <a href="{{ url_for('customer_orders') }}">My Orders</a>
+            <a href="{{ url_for('customer_profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="header">Favorite Items</h1>
+        <div class="item-grid">
+            {% for entry in items %}
+            <div class="item-card">
+                <div>
+                    <div class="item-title">{{ entry.item.item_name }}</div>
+                    <div class="shop-name">from {{ entry.shop.name }}</div>
+                    <div class="item-category">{{ entry.item.category }}</div>
+                    <div class="price">
+                        ₹{{ entry.serving_option.price if entry.serving_option else "N/A" }}
+                    </div>
+                </div>
+                <div class="btn-group">
+                    {% if entry.serving_option %}
+                    <form action="{{ url_for('add_to_cart', menu_item_id=entry.item.id, serving_option_id=entry.serving_option.id) }}" method="post" style="margin:0;">
+                        <button type="submit" class="add-btn">Add to Cart</button>
+                    </form>
+                    {% endif %}
+                    <form action="{{ url_for('remove_favorite') }}" method="post" style="margin:0;">
+                        <input type="hidden" name="menu_item_id" value="{{ entry.item.id }}">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p style="padding:1rem;">No favorite items found.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+    </footer>
+</body>
+</html>

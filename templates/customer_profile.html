@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Profile - Campus Bites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+            background-size: cover;
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #1c2331, #2c3e50);
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar .logo h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-actions a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-actions a::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #ff92a2;
+            transition: width 0.3s ease;
+        }
+
+        .nav-actions a:hover {
+            color: #ffb3c1;
+        }
+
+        .nav-actions a:hover::after {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 192, 203, 0.4);
+        }
+
+        .flash {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+
+        .flash.error {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .profile-status {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 10px;
+        }
+
+        .progress {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: white;
+            height: 100%;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+        }
+
+        legend {
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 0 10px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        fieldset {
+            border: 1px solid #ffc0cb;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 1rem;
+            color: #2c3e50;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input[readonly] {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #2c3e50;
+            font-weight: 600;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            margin-top: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            padding: 12px;
+            background: #1c2331;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+        }
+        footer {
+            background: #1c2331;
+            color: #fff;
+            padding: 1.2rem;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-actions {
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h1>Campus Bites</h1>
+        </div>
+        <div class="nav-actions">
+            <a href="/customer_profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </header>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <section class="profile-status">
+            <h3>Profile Completion: {{ profile_completion }}%</h3>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ profile_completion }}%;">{{ profile_completion }}%</div>
+            </div>
+        </section>
+
+        <form method="POST">
+            <fieldset disabled>
+                <legend>Basic Details</legend>
+                <label>Name:</label>
+                <input type="text" value="{{ customer.name }}">
+                <label>Email:</label>
+                <input type="text" value="{{ customer.email }}">
+                <label>Campus:</label>
+                <input type="text" value="{{ customer.campus }}">
+            </fieldset>
+
+            <fieldset>
+                <legend>Additional Details</legend>
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" value="{{ customer.dob }}" {% if dob_locked %}readonly{% endif %}>
+                {% if dob_locked %}
+                <p style="color: #721c24; font-size: 0.9rem;">Note: Date of Birth is locked and cannot be edited once set.</p>
+                {% else %}
+                <p style="color: #2c3e50; font-size: 0.9rem;">Note: You can only set your Date of Birth once.</p>
+                {% endif %}
+
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ customer.phone_number or '' }}">
+
+                <label for="payment_choice">Preferred Payment:</label>
+                <select id="payment_choice" name="payment_choice">
+                    <option value="">Select</option>
+                    <option value="COD" {% if customer.payment_choice == 'COD' %}selected{% endif %}>Cash on Delivery</option>
+                    <option value="UPI" {% if customer.payment_choice == 'UPI' %}selected{% endif %}>UPI</option>
+                </select>
+            </fieldset>
+
+            <button type="submit">Save Profile</button>
+            <a href="{{ url_for('customer_dashboard') }}" class="back-button">Back to Dashboard</a>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+    </footer>
+</body>
+
+</html>

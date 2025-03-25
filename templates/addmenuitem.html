@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Menu Item - Campus Bites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body {
+      font-family:'Poppins',sans-serif;
+      color:#2c3e50;
+      min-height:100vh;
+      background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+      background-size:cover;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .navbar {
+      background:linear-gradient(90deg,#1c2331,#2c3e50);
+      color:white;
+      padding:1.2rem 2rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .navbar .logo h1 {
+      margin:0;
+      font-size:1.8rem;
+      font-weight:bold;
+    }
+
+    .nav-actions {
+      display:flex;
+      gap:1.5rem;
+    }
+
+    .nav-actions a {
+      color:white;
+      text-decoration:none;
+      font-weight:500;
+      position:relative;
+      transition:color 0.3s ease;
+    }
+
+    .nav-actions a::after {
+      content:'';
+      position:absolute;
+      width:0%;
+      height:2px;
+      bottom:-4px;
+      left:0;
+      background-color:#ff92a2;
+      transition:width 0.3s ease;
+    }
+
+    .nav-actions a:hover {
+      color:#ffb3c1;
+    }
+
+    .nav-actions a:hover::after {
+      width:100%;
+    }
+
+    h1.page-title {
+      text-align:center;
+      font-size:2rem;
+      font-weight:bold;
+      margin:2rem 0 1rem 0;
+      color:#000;
+    }
+
+    .container {
+      max-width:700px;
+      margin:2rem auto;
+      padding:2rem;
+      background:rgba(255,255,255,0.95);
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.1);
+      border:2px solid rgba(255,192,203,0.4);
+    }
+
+    form label {
+      display:block;
+      margin-top:15px;
+      font-weight:600;
+    }
+
+    input, select, textarea {
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      margin-top:5px;
+    }
+
+    .serving-option-group {
+      background:#fafafa;
+      border:1px dashed #ccc;
+      padding:12px;
+      margin-top:15px;
+      border-radius:10px;
+    }
+
+    .add-serving, .submit-btn {
+      display:inline-block;
+      margin-top:20px;
+      padding:10px 20px;
+      border-radius:30px;
+      font-weight:600;
+      font-size:1rem;
+      border:none;
+      cursor:pointer;
+      color:#2c3e50;
+      background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 100%);
+      box-shadow:0 4px 6px rgba(0,0,0,0.1);
+      transition:all 0.3s ease;
+    }
+
+    .add-serving:hover, .submit-btn:hover {
+      background:linear-gradient(135deg,#fbc2eb 0%,#a6c1ee 100%);
+      transform:translateY(-2px);
+    }
+
+    .back-link {
+      text-align:center;
+      margin-top:1.5rem;
+    }
+
+    .back-link a {
+      color:#2c3e50;
+      font-weight:600;
+      text-decoration:none;
+    }
+
+    .back-link a:hover {
+      text-decoration:underline;
+    }
+
+    footer {
+      background:#1c2331;
+      color:#fff;
+      padding:1rem;
+      text-align:center;
+      border-top:4px solid #ff92a2;
+      box-shadow:0 -4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+
+  <script>
+    function addServingOption() {
+      const container=document.getElementById('serving-options');
+      const div=document.createElement('div');
+      div.className='serving-option-group';
+      div.innerHTML=`
+        <label>Serving Size:</label>
+        <select name="serving_size[]" required>
+          <option value="">-- Select Size --</option>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Full">Full</option>
+        </select>
+        <label>Price (₹):</label>
+        <input type="number" name="price[]" step="0.01" required>
+      `;
+      container.appendChild(div);
+    }
+  </script>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo"><h1>Campus Bites</h1></div>
+    <div class="nav-actions">
+      <a href="/owner_dashboard">Dashboard</a>
+      <a href="{{ url_for('create_shop') }}">Create Shop</a>
+      <a href="/owner_orders">Order Queue</a>
+      <a href="{{ url_for('view_orders') }}">View Orders</a>
+      <a href="/owner_profile">Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </header>
+
+  <h1 class="page-title">Add Menu Item</h1>
+
+  <div class="container">
+    <form method="POST" action="{{ url_for('add_menu_item', shop_id=shop_id) }}" enctype="multipart/form-data">
+      <label>Item Name</label>
+      <input type="text" name="item_name" required>
+
+      <label>Item Photo (optional)</label>
+      <input type="file" name="item_photo" accept="image/*">
+
+      <label>Cook Time (in minutes)</label>
+      <input type="number" name="cook_time">
+
+      <label>Veg/Non-Veg</label>
+      <select name="type" required>
+        <option value="">-- Select Type --</option>
+        <option value="Veg">Veg</option>
+        <option value="Non-Veg">Non-Veg</option>
+      </select>
+
+      <label>Category</label>
+      <select name="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="Pizza">Pizza</option>
+        <option value="Thali">Thali</option>
+        <option value="North Indian">North Indian</option>
+        <option value="Dosa">Dosa</option>
+        <option value="Momos">Momos</option>
+        <option value="Noodles">Noodles</option>
+        <option value="South Indian">South Indian</option>
+        <option value="Rolls">Rolls</option>
+        <option value="Burger">Burger</option>
+        <option value="Paratha">Paratha</option>
+        <option value="Cake">Cake</option>
+        <option value="Chinese">Chinese</option>
+        <option value="Paneer">Paneer</option>
+        <option value="Fried Rice">Fried Rice</option>
+        <option value="Sandwich">Sandwich</option>
+        <option value="Daal">Daal</option>
+        <option value="Sweets">Sweets</option>
+        <option value="Desserts">Desserts</option>
+        <option value="Khichdi">Khichdi</option>
+        <option value="Biryani">Biryani</option>
+        <option value="Juice">Juice</option>
+        <option value="Tea">Tea</option>
+        <option value="Lassi">Lassi</option>
+      </select>
+
+      <label>Discount (%)</label>
+      <input type="number" name="discount" step="0.01">
+
+      <label>Status</label>
+      <select name="status">
+        <option value="Available">Available</option>
+        <option value="Out of Stock">Out of Stock</option>
+      </select>
+
+      <label>Spicy Level (0-5)</label>
+      <input type="number" name="spicy_level" min="0" max="5">
+
+      <label>Popularity Tag</label>
+      <select name="popularity_tag">
+        <option value="">None</option>
+        <option value="Chef Special">Chef Special</option>
+        <option value="Restaurant Special">Restaurant Special</option>
+      </select>
+
+      <h2>Serving Options</h2>
+      <div id="serving-options">
+        <div class="serving-option-group">
+          <label>Serving Size:</label>
+          <select name="serving_size[]" required>
+            <option value="">-- Select Size --</option>
+            <option value="Small">Small</option>
+            <option value="Medium">Medium</option>
+            <option value="Full">Full</option>
+          </select>
+          <label>Price (₹):</label>
+          <input type="number" name="price[]" step="0.01" required>
+        </div>
+      </div>
+
+      <button type="button" class="add-serving" onclick="addServingOption()">+ Add Serving Option</button>
+      <br>
+      <div style="text-align:center;">
+        <button type="submit" class="submit-btn">Add Item</button>
+      </div>
+    </form>
+
+    <div class="back-link">
+      <a href="{{ url_for('show_menu', shop_id=shop_id) }}">← Back to Menu</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+  </footer>
+</body>
+</html>

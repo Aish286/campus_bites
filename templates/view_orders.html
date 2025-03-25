@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders | Campus Bites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='your_css_file.css') }}">
+    <style>
+        * {
+          box-sizing:border-box;
+        }
+      
+        html,body {
+          margin:0;
+          padding:0;
+          font-family:'Segoe UI',sans-serif;
+          background: url("{{ url_for('static', filename='kj.png') }}") center center fixed;
+          background-size: cover;
+          background-repeat: no-repeat;
+          min-height:100vh;
+          display:flex;
+          flex-direction:column;
+        }
+      
+        .navbar {
+          background:linear-gradient(90deg,#1c2331,#2c3e50);
+          color:white;
+          padding:1.2rem 2rem;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          box-shadow:0 4px 12px rgba(0,0,0,0.3);
+        }
+      
+        .navbar .logo h1 {
+          margin:0;
+          font-size:1.8rem;
+          font-weight:bold;
+        }
+      
+        .nav-actions {
+          display:flex;
+          gap:1.5rem;
+        }
+      
+        .nav-actions a {
+          color:white;
+          text-decoration:none;
+          font-weight:500;
+          position:relative;
+          transition:color 0.3s ease;
+        }
+      
+        .nav-actions a::after {
+          content:'';
+          position:absolute;
+          width:0%;
+          height:2px;
+          bottom:-4px;
+          left:0;
+          background-color:#ff92a2;
+          transition:width 0.3s ease;
+        }
+      
+        .nav-actions a:hover {
+          color:#ffb3c1;
+        }
+      
+        .nav-actions a:hover::after {
+          width:100%;
+        }
+      
+        .header {
+          text-align:center;
+          font-size:2rem;
+          margin:2rem 0 1.2rem;
+          color:#000;
+        }
+      
+        .order-grid {
+          display:grid;
+          grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+          gap:1.5rem;
+          padding:1rem 2rem 2rem;
+          flex-grow:1;
+        }
+      
+        .order-card {
+  background:white;
+  padding:1.5rem;
+  border-radius:1rem;
+  box-shadow:0 8px 24px rgba(0,0,0,0.1); /* updated shadow */
+  transition:transform 0.2s ease,box-shadow 0.2s ease;
+  display:flex;
+  flex-direction:column;
+  border: 2px solid rgba(255, 192, 203, 0.4);
+}
+
+      
+        .order-card:hover {
+          transform:translateY(-4px);
+          box-shadow:0 6px 18px rgba(0,0,0,0.15);
+        }
+      
+        .order-card p {
+          margin:0.5rem 0;
+          font-size:1rem;
+          color:#333;
+        }
+      
+        .order-card ul {
+          list-style:disc;
+          padding-left:1.2rem;
+          margin:0.5rem 0 0.8rem;
+          color:#444;
+        }
+      
+        .status {
+          font-weight:600;
+          color:#1565c0;
+        }
+      
+        .btn-form {
+          margin-top:auto;
+        }
+      
+        .btn-form button {
+          width:100%;
+          padding:0.7rem;
+          font-size:1rem;
+          font-weight:600;
+          border:none;
+          border-radius:0.5rem;
+          background:#2e7d32;
+          color:white;
+          cursor:pointer;
+          transition:background 0.3s ease;
+        }
+      
+        .btn-form button:hover {
+          background:#1b5e20;
+        }
+      
+        .back-link {
+          margin:1rem 2rem;
+          display:inline-block;
+          color:#2e7d32;
+          text-decoration:none;
+          font-weight:500;
+        }
+      
+        footer {
+          background:#1c2331;
+          color:#fff;
+          padding:1rem;
+          text-align:center;
+          border-top:4px solid #ff92a2;
+          box-shadow:0 -4px 12px rgba(0,0,0,0.3);
+          margin-top:auto;
+        }
+      </style>
+      
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+          <h1>Campus Bites</h1>
+        </div>
+        <div class="nav-actions">
+          <a href="/owner_dashboard">Dashboard</a>
+          <a href="{{ url_for('create_shop') }}">Create Shop</a>
+          <a href="/owner_orders">Order Queue</a>
+          <a href="/manage_shop">Your Shop</a>
+          <a href="/owner_profile">Profile</a>
+          <a href="/logout">Logout</a>
+        </div>
+      </header>
+
+    <h1 class="header">In-Progress Orders</h1>
+
+    <div class="order-grid">
+        {% for order in accepted_orders %}
+        <div class="order-card">
+            <p><strong>Shop:</strong> {{ order.shop.name }}</p>
+            <p><strong>Customer:</strong> {{ order.customer.name }}</p>
+            <p><strong>Status:</strong> <span class="status">In Progress</span></p>
+
+            <p><strong>Items:</strong></p>
+            <ul>
+                {% for item in order.items %}
+                    <li>{{ item.quantity }} × {{ item.name }} ({{ item.serving }}) - ₹{{ item.price }}</li>
+                {% endfor %}
+            </ul>
+
+            <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+
+            <div class="btn-form">
+                <form action="{{ url_for('mark_ready', order_id=order.id) }}" method="post">
+                    <button type="submit">Mark as Ready to Pick Up</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p style="padding:1rem;">No in-progress orders right now.</p>
+        {% endfor %}
+    </div>
+
+    <h1 class="header">Completed Orders (Last 7 Days)</h1>
+
+<div class="order-grid">
+    {% for order in completed_orders %}
+    <div class="order-card">
+        <p><strong>Shop:</strong> {{ order.shop.name }}</p>
+        <p><strong>Customer:</strong> {{ order.customer.name }}</p>
+        <p><strong>Status:</strong> <span class="status" style="color:#2e7d32;">Completed</span></p>
+
+        <p><strong>Items:</strong></p>
+        <ul>
+            {% for item in order.items %}
+                <li>{{ item.quantity }} × {{ item.name }} ({{ item.serving }}) - ₹{{ item.price }}</li>
+            {% endfor %}
+        </ul>
+
+        <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+        <p><strong>Completed At:</strong> {{ order.timestamp.strftime('%d-%m-%Y %H:%M') }}</p>
+    </div>
+    {% else %}
+    <p style="padding:1rem;">No completed orders in the past 7 days.</p>
+    {% endfor %}
+</div>
+<footer>
+    <p>&copy; 2025 Campus Bites. Made with ❤️ to bring students and campus dining together.</p>
+  </footer>
+</body>
+</html>
